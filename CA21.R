@@ -1,7 +1,5 @@
-library(caret)
-
-##############################################################################################################
-# Prepare Data
+############################################################################################################################################################################################################################
+# Prepare Data for Q1
 
 rm(list = ls())                    # Remove environment variables
 
@@ -25,7 +23,7 @@ sum(is.na(dataset))                                    # Check for NULL Values
 summary(dataset)                                       # Display min, 1st Q, median, mean, 3rd Qu, Max. Already we can see that
                                                        # the mean of admit is 0.3175 meaning there are more rejects then admits
 
-##############################################################################################################
+############################################################################################################################################################################################################################
 
 #Consider a relational dataset and specify your input and output variables , then
 
@@ -154,25 +152,110 @@ which(prior==max(prior))-1
 
 # 2) (c) Using (a) and (b), find the posterior distribution of  λ
 
-Posterior <- function(x,y){
+
+Posterior.func<-function(x,y){
   post <- NULL
   for (l in 0:max(x)){
-    p <- 1
+    p<-1
     for(i in 0:max(x)){
-      p <- p*dgamma(l,shape=y+i,rate=2)
+      p <- p*dgamma(l, shape= y + i,rate = 2)
     }
-    post<-rbind(post,c(l,p))
+    post <- rbind(post,c(l,p))
   }
   post <- data.frame(post)
-  names(post) <- c("Lambda","Posterior")
+  names(post) <- c("Lambda","posterior")
   sumpost <- sum(post$posterior)
   post$posterior <- post$posterior / sumpost
   post
 }
-#####
-post <- Posterior(x=data2,y=lambda)
+
+post <- Posterior.func(x = data2,y = lambda)
 
 
 ##############################################################################################################
 
-# 2) (d) Compute the minimum Bayesian risk estimator of  λ.  
+# 2) (d) Compute the minimum Bayesian risk estimator of  λ. 
+
+
+
+###########################################################################################################################################################################################################################
+
+
+# An opinion poll surveyed a simple random sample of 1000 students. Respondents were classified by gender (male or female) and by opinion (Reservation for women, No Reservation, or No Opinion). 
+# Results are shown in the observed contingency table below.
+
+# Does the gender and opinion on women reservation are independent?  Use a 0.05 level of significance. To do so, 
+
+
+# Q3 a) State the hypotheses.
+
+
+cat("H0 - Gender and Opionion on Women Reservation are independent.\nH1 - Gender and Opionion on Women Reservation are not independent")
+
+
+##############################################################################################################
+
+# Q2 b)	Find the statistic and critical values
+
+fulltab <- matrix(c(200,150,50,400,250,300,50,600,450,450,100,1000),ncol=4,byrow=TRUE)            # Full table
+colnames(fulltab) <- c("Yes","No","Cantsay","RowTotal")
+rownames(fulltab) <- c("Male","Female","ColumnTotal")
+fulltab <- as.table(fulltab)
+fulltab
+
+
+tab <- matrix(c(200,150,50,250,300,50),ncol=3,byrow=TRUE)                                         # Table for Chi-sq
+colnames(tab) <- c("Yes","No","Cantsay")
+rownames(tab) <- c("Male","Female")
+tab <- as.table(tab)
+tab
+
+cat("For this sample this, I will use the chi-square test for independence.")
+
+summary(tab)                                                                              # Displays Number of cases, factors and which test, In this case we use the chi-square test
+
+chisq.test(tab)[1]                                                                        # Chi squared value (Test Statistic)
+qchisq(1-0.0003029775, 2)
+
+chisq.test(tab)$p.value                                                                   # p.value P(Χ2 > 16.2) = 0.0003.
+
+
+chisq.test(tab)[2]                                                                        # Degree of freedom value
+
+
+t.test(tab)[1]                                                                            # T- Value
+
+qchisq(.95, df=2)                                                                         # Critical vales at 5% level of significance with degree of freedom = 2 for one tailed test is 5.991465
+abs(qt(0.05, 2))
+
+##############################################################################################################
+
+
+# Q2 c)	Explain your decision and Interpret results
+
+e11 = fulltab[1,4]*fulltab[3,1]/fulltab[3,4]                                          # Calculate expected frequency
+e21 = fulltab[2,4]*fulltab[3,2]/fulltab[3,4] 
+e12 = fulltab[1,4]*fulltab[3,2]/fulltab[3,4]
+e22 = fulltab[2,4]*fulltab[3,1]/fulltab[3,4]
+e13 = fulltab[1,4]*fulltab[3,3]/fulltab[3,4]
+e33 = fulltab[2,4]*fulltab[3,3]/fulltab[3,4]
+
+expectedtab <- matrix(c(e11,e12,e13,400,e21,e22,e33,600,450,450,100,1000),ncol=4,byrow=TRUE)                      # Table of expected frequencies
+colnames(expectedtab) <- c("Yes","No","Cantsay","RowTotal")
+rownames(expectedtab) <- c("Male","Female","ColumnTotal")
+expectedtab <- as.table(expectedtab)
+expectedtab
+  
+cat("The P-value",chisq.test(tab)$p.value,"is less than the significance level 0.05 so we cannot accept the null hypothesis. Therefore, In conclusion there is a relationship between gender and Opionion on Women Reservation ")
+
+cat("The sampling method wasrandom sampling")
+
+cat("The variables were categorical")
+
+
+
+
+
+
+
+
