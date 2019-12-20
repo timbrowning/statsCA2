@@ -83,6 +83,10 @@ pred                                                             # Displays pred
 
 cat("Optimal Predictive Model\n\n ",coef(model.fit)[1],"+",coef(model.fit)[2],"gre","+",coef(model.fit)[3],"gpa",coef(model.fit)[4],"Rank2",coef(model.fit)[5],"Rank3",coef(model.fit)[6],"Rank4") #OUTPUT -3.942943 + 0.002570195gre + 0.7314618gpa -0.7106174Rank2 -1.392661Rank3 -1.8274Rank4
 
+RMSE <- sqrt(sum((testset[,4]-pred)^2)/length(testset[,4]))      # RMSE
+RMSE
+#** Implementing a A "Monte Carlo" Statistical Methods would make this more accurate **
+
 ##############################################################################################################
 
 # 1) (d) Provide the confusion matrix and obtain the probability of correctness of predictions. 
@@ -250,7 +254,7 @@ expectedtab
   
 cat("The P-value",chisq.test(tab)$p.value,"is less than the significance level 0.05 so we cannot accept the null hypothesis. Therefore, In conclusion there is a relationship between gender and Opionion on Women Reservation ")
 
-cat("The sampling method wasr andom sampling")
+cat("The sampling method wasr  ndom sampling")
                                                                    #  Data verification                                                        
 cat("The variables were categorical")
 
